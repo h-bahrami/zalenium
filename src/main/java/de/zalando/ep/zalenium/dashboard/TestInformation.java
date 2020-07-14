@@ -53,6 +53,7 @@ public class TestInformation {
     private TestStatus testStatus;
     private boolean videoRecorded;
     private JsonObject metadata;
+    private String webdriverRemoteSessionId;
 
     public boolean isVideoRecorded() {
         return videoRecorded;
@@ -249,6 +250,18 @@ public class TestInformation {
     public JsonObject getMetadata() { return this.metadata;}
     public void setMetadata(JsonObject metadata) { this.metadata = metadata;}
 
+    public String getWebdriverRemoteSessionId() {
+		return webdriverRemoteSessionId;
+	}
+
+    public void setWebdriverRemoteSessionId(String webdriverRemoteSessionId) {
+		this.webdriverRemoteSessionId = webdriverRemoteSessionId;
+	}
+    
+    public String getTestFileNameTemplate() {
+    	return this.testFileNameTemplate;
+    }
+
     public void setTestName(String name) { this.testName = name;}
 
     public void setFileCount(int fileCount) {
@@ -301,6 +314,7 @@ public class TestInformation {
         this.testStatus = builder.testStatus;
         this.videoRecorded = true;
         this.metadata = builder.metadata;
+        this.webdriverRemoteSessionId = builder.webdriverRemoteSessionId;
         buildVideoFileName();
     }
 
@@ -322,6 +336,7 @@ public class TestInformation {
         private TestStatus testStatus;
         private JsonObject metadata;
         private List<RemoteLogFile> remoteLogFiles;
+        private String webdriverRemoteSessionId;
 
         public TestInformationBuilder withSeleniumSessionId(String seleniumSessionId) {
             this.seleniumSessionId = seleniumSessionId;
@@ -405,6 +420,11 @@ public class TestInformation {
 
         public TestInformationBuilder withMetadata(JsonObject metadata) {
             this.metadata = metadata;
+            return this;
+        }
+
+        public TestInformationBuilder withWebdriverRemoteSessionId(String sessionId) {
+            this.webdriverRemoteSessionId = sessionId;
             return this;
         }
 

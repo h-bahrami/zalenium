@@ -412,6 +412,7 @@ public class DockerSeleniumRemoteProxy extends DefaultRemoteProxy {
         String screenResolution = getCapability(session.getSlot().getCapabilities(), ZaleniumCapabilityType.SCREEN_RESOLUTION, "N/A");
         String browserVersion = getCapability(session.getSlot().getCapabilities(), CapabilityType.VERSION, "");
         String timeZone = getCapability(session.getSlot().getCapabilities(), ZaleniumCapabilityType.TIME_ZONE, "N/A");
+        String webDriverRemoteSessionId = getCapability(session.getSlot().getCapabilities(), "webdriver.remote.sessionid", ""); 
         testInformation = new TestInformation.TestInformationBuilder()
                 .withTestName(testName)
                 .withSeleniumSessionId(seleniumSessionId)
@@ -424,6 +425,7 @@ public class DockerSeleniumRemoteProxy extends DefaultRemoteProxy {
                 .withTestFileNameTemplate(testFileNameTemplate)
                 .withBuild(testBuild)
                 .withTestStatus(TestInformation.TestStatus.COMPLETED)
+                .withWebdriverRemoteSessionId(webDriverRemoteSessionId)
                 .build();
         testInformation.setVideoRecorded(isVideoRecordingEnabled());
 
