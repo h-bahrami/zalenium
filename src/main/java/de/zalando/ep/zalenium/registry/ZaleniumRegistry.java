@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import de.zalando.ep.zalenium.proxy.AutoStartProxySet;
 import de.zalando.ep.zalenium.proxy.DockerSeleniumRemoteProxy;
 import de.zalando.ep.zalenium.proxy.DockeredSeleniumStarter;
+import de.zalando.ep.zalenium.proxy.novnc.WebSockifyServer;
 import de.zalando.ep.zalenium.util.Environment;
 import de.zalando.ep.zalenium.util.ZaleniumConfiguration;
 import io.prometheus.client.Collector;
@@ -338,6 +339,10 @@ public class ZaleniumRegistry extends BaseGridRegistry implements GridRegistry {
      * @see GridRegistry#add(RemoteProxy)
      */
     public void add(RemoteProxy proxy) {
+
+        WebSockifyServer.setup(9719, false);        
+        LOG.info(WebSockifyServer.describe());
+        
         if (proxy == null) {
             return;
         }
