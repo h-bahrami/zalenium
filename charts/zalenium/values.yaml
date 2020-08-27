@@ -1,11 +1,11 @@
 hub:
   ## The repository and image
   ## ref: https://hub.docker.com/r/dosel/zalenium
-  image: "dosel/zalenium"
+  image: "banika/customized_zalenium"
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/dosel/zalenium/tags
-  tag: "latest"
+  tag: "3.141.59z"
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -55,7 +55,7 @@ hub:
   ## The type of service to create
   ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
   ## ref: https://kubernetes.io/docs/user-guide/services/
-  serviceType: "NodePort"
+  serviceType: "LoadBalancer"
 
   ## Port on which K8s service is listening on. Zalenium WebUI will be available there.
   svcPort: 80
@@ -89,9 +89,9 @@ hub:
 
   ## Environment variables passed to Zalenium hub.
   ## https://github.com/zalando/zalenium/blob/master/docs/usage_examples.md
-  desiredContainers: 2
-  maxDockerSeleniumContainers: 10
-  videoRecordingEnabled: true
+  desiredContainers: 10
+  maxDockerSeleniumContainers: 250
+  videoRecordingEnabled: false
   # the limits/requests below are for Selenium pods (containers)
   cpuRequest: 250m
   cpuLimit: 1000m
@@ -100,7 +100,7 @@ hub:
   screenWidth: 1440
   screenHeight: 900
   timeZone: "UTC"
-  seleniumImageName: "elgalu/selenium"
+  seleniumImageName: "elgalu/selenium:3.141.59-p16"
   maxTestSessions: 1
   newSessionsWaitTimeout: 600000
   debugEnabled: false
@@ -108,9 +108,9 @@ hub:
   retentionPeriod: 3
   sendAnonymousUsageInfo: true
   basicAuth:
-    enabled: false
-    username: "zalenium"
-    password: "password"
+    enabled: true
+    username: "atszalenium"
+    password: "seleniumk8!nATS"
   sauceLabsEnabled: false
   sauceUserName: blank
   sauceAccessKey: blank
@@ -183,10 +183,10 @@ persistence:
     folder: ""
 
 ingress:
-  enabled: false
-  tls: false
-  # secretName: my-tls-cert # only needed if tls above is true
-  hostname: zalenium.foobar.com
+  enabled: true
+  tls: true
+  secretName: kubernetes-tls-secret-z2 # only needed if tls above is true
+  hostname: loadtesthub1.sdfonazure.com
   # If your ingress host name is shared with multiple
   # applications, Enter a path starting with / (eg. /zalenium)
   # If your ingress host name is only for Zalenium,
@@ -194,8 +194,9 @@ ingress:
   # path: /
   # maxBodySize: 300M
   annotations:
-  # kubernetes.io/ingress.class: "nginx"
-  # kubernetes.io/tls-acme: "true"
+   kubernetes.io/ingress.class: nginx
+   cert-manager.io/cluster-issuer: letsencrypt-prod
+   # kubernetes.io/tls-acme: "true"
   ## For RBAC support:
 
 rbac:
