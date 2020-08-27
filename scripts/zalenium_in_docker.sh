@@ -32,9 +32,9 @@ StartUp()
         HOST_OPTIONS="-e HOST_UID=\"$(id -u)\" -e HOST_GID=\"$(id -g)\""
     fi
 
-    DOCKER_SELENIUM_IMAGE_COUNT=$(docker images | grep "elgalu/selenium" | wc -l)
+    DOCKER_SELENIUM_IMAGE_COUNT=$(docker images | grep "elgalu/selenium:3.141.59-p16" | wc -l)
     if [ ${DOCKER_SELENIUM_IMAGE_COUNT} -eq 0 ]; then
-        echo "Seems that docker-selenium's image has not been downloaded yet, please run 'docker pull elgalu/selenium' first"
+        echo "Seems that docker-selenium's image has not been downloaded yet, please run 'docker pull elgalu/selenium:3.141.59-p16' first"
         exit 1
     fi
 

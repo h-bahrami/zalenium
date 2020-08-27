@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CONTAINER_NAME="zalenium"
-SELENIUM_IMAGE_NAME=${SELENIUM_IMAGE_NAME:-"elgalu/selenium"}
+SELENIUM_IMAGE_NAME=${SELENIUM_IMAGE_NAME:-"elgalu/selenium:3.141.59-p16"}
 MAX_TEST_SESSIONS=${MAX_TEST_SESSIONS:-1}
 DESIRED_CONTAINERS=${DESIRED_CONTAINERS:-2}
 MAX_DOCKER_SELENIUM_CONTAINERS=${MAX_DOCKER_SELENIUM_CONTAINERS:-10}
@@ -318,7 +318,7 @@ StartUp()
                 docker -H ${DOCKER_HOST} pull ${SELENIUM_IMAGE_NAME}
             else
                 echo "Seems that docker-selenium's image has not been pulled yet"
-                echo "Please run 'docker pull elgalu/selenium', or use your own compatible image via --seleniumImageName"
+                echo "Please run 'docker pull elgalu/selenium:3.141.59-p16', or use your own compatible image via --seleniumImageName"
                 exit 1
             fi
         fi
@@ -935,7 +935,7 @@ function usage()
     echo -e "\t --debugEnabled -> enables LogLevel.FINE. Defaults to 'false'"
     echo -e "\t --logJson -> output logs in json format. Defaults to 'false'"
     echo -e "\t --logbackConfigFilePath -> path to a custom logback config file. Defaults to 'logback.xml'"
-    echo -e "\t --seleniumImageName -> enables overriding of the Docker selenium image to use. Defaults to \"elgalu/selenium\""
+    echo -e "\t --seleniumImageName -> enables overriding of the Docker selenium image to use. Defaults to \"elgalu/selenium:3.141.59-p16\""
     echo -e "\t --gridUser -> allows you to specify a user to enable basic auth protection, --gridPassword must be provided also."
     echo -e "\t --gridPassword -> allows you to specify a password to enable basic auth protection, --gridUser must be provided also."
     echo -e "\t --maxTestSessions -> max amount of tests executed per container, defaults to '1'."

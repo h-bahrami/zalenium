@@ -133,13 +133,13 @@ else
     elif [ "${WE_HAVE_SUDO_ACCESS}" == "false" ]; then
         # Make sure Docker works (without sudo) before continuing
         docker --version
-        docker -H ${DOCKER_HOST} images elgalu/selenium >/dev/null
+        docker -H ${DOCKER_HOST} images elgalu/selenium:3.141.59-p16 >/dev/null
         # Replace the current process with zalenium.sh
         exec  ./zalenium.sh "$@"
     else
         # Make sure Docker works (with sudo) before continuing
         docker --version
-        sudo docker -H ${DOCKER_HOST} images elgalu/selenium >/dev/null
+        sudo docker -H ${DOCKER_HOST} images elgalu/selenium:3.141.59-p16 >/dev/null
         # Replace the current process with zalenium.sh
         exec sudo --preserve-env ./zalenium.sh "$@"
     fi

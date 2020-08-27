@@ -13,37 +13,37 @@ jobs:
       env: step=sauceLabs
       if: type = pull_request
       script:
-      - docker pull elgalu/selenium
+      - docker pull elgalu/selenium:3.141.59-p16
       - travis_retry ./run_integration_tests.sh sauceLabs
 
     - env: step=browserStack
       if: type = pull_request
       script:
-        - docker pull elgalu/selenium
+        - docker pull elgalu/selenium:3.141.59-p16
         - travis_retry ./run_integration_tests.sh browserStack
 
     - env: step=crossBrowserTesting
       if: type = pull_request
       script:
-        - docker pull elgalu/selenium
+        - docker pull elgalu/selenium:3.141.59-p16
         - travis_retry ./run_integration_tests.sh crossBrowserTesting
 
     - env: step=testingBot
       if: type = pull_request
       script:
-        - docker pull elgalu/selenium
+        - docker pull elgalu/selenium:3.141.59-p16
         - travis_retry ./run_integration_tests.sh testingBot
 
     - env: step=lambdaTest
       if: type = pull_request
       script:
-        - docker pull elgalu/selenium
+        - docker pull elgalu/selenium:3.141.59-p16
         - travis_retry ./run_integration_tests.sh lambdaTest
 
     - env: step=dockerCompose
       if: type = pull_request
       script:
-      - docker pull elgalu/selenium
+      - docker pull elgalu/selenium:3.141.59-p16
       - curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m` > docker-compose
       - chmod +x docker-compose
       - sudo mv docker-compose /usr/local/bin
@@ -63,7 +63,7 @@ jobs:
     - env: step=minikube
       if: type = pull_request
       script:
-      - docker pull elgalu/selenium
+      - docker pull elgalu/selenium:3.141.59-p16
       - travis_retry ./kubernetes/minikube-ci-initialize.sh
       - mvn clean package -Pbuild-docker-image -DskipTests=true
       - cd target && docker build -t dosel/zalenium:latest . && cd ..

@@ -16,7 +16,7 @@ pipeline:
       apt-get update
       apt-get install -y maven openjdk-8-jdk-headless
       # Install docker-selenium
-      docker pull elgalu/selenium
+      docker pull elgalu/selenium:3.141.59-p16
 
   - desc: Run unit tests
     cmd: |
@@ -51,7 +51,7 @@ pipeline:
   - desc: Push Docker-Selenium image
     cmd: |
       IMAGE="registry-write.opensource.zalan.do/tip/docker-selenium:${CDP_BUILD_VERSION}"
-      docker tag elgalu/selenium $IMAGE
+      docker tag elgalu/selenium:3.141.59-p16 $IMAGE
       if [ -z "$CDP_PULL_REQUEST_NUMBER" ]; then
         docker push $IMAGE
       fi

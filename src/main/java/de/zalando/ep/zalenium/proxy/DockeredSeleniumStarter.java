@@ -61,7 +61,7 @@ public class DockeredSeleniumStarter {
     private static final String DEFAULT_ZALENIUM_CONTAINER_NAME = "zalenium";
     private static final String ZALENIUM_CONTAINER_NAME = "ZALENIUM_CONTAINER_NAME";
     private static final Logger LOGGER = LoggerFactory.getLogger(DockeredSeleniumStarter.class.getName());
-    private static final String DEFAULT_DOCKER_SELENIUM_IMAGE = "elgalu/selenium";
+    private static final String DEFAULT_DOCKER_SELENIUM_IMAGE = "elgalu/selenium:3.141.59-p16";
     private static final String ZALENIUM_SELENIUM_IMAGE_NAME = "ZALENIUM_SELENIUM_IMAGE_NAME";
     private static final int LOWER_PORT_BOUNDARY = 40000;
     private static final int UPPER_PORT_BOUNDARY = 49999;
