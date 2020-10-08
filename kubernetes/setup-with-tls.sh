@@ -1,54 +1,71 @@
 #!/usr/bin/env bash
 
-# https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-on-digitalocean-kubernetes-using-helm
+# *** VERY IMPORTANT, SET PROPER VALUES FOR THE FOLLOWING SETTINGS, THEN RUN **** 
+#   Check points  
+#   values.yaml
+#       ingress.secretName
+#       ingress.hostname
+#   production_issuer
+#       acme.email, acme.privateKeySecretRef.name
 
-NAMESPACE = 'z1'
+CLUSTER = 'cluster'
+NAMESPACE = 'namspace'
+INSTALL_CERT_MANAGER = 0            # 0 | 1
+PAUSE_4_STEPS = 1                   # 0 | 1
+CERTIFICATE_SECRET_NAME = "tls-secret-name"
 
-echo "Step 0 - Creating namespace $NAMESPACE"
+function Pause(){
+    echo " "
+    echo " "
+    echo $1 $2 $3
+    if [[ $PAUSE_4_STEPS -eq 1 ]] 
+    then         
+        read -p "Press any key to resume ..."
+    fi
+    echo "############################################################################################"
+}
+
+Pause "Step 0 - Creating $CLUSTER:$NAMESPACE and other initializations"
+helm repo update 
+kubectl config use-context $CLUSTER
 kubectl create namespace $NAMESPACE
 
-echo "Step 1 — Setting Up Hello World Deployments"
+Pause "Step 1 — Deploy Selenium Hub..."
 helm install zalenium --namespace $NAMESPACE ../charts/zalenium --set ingress.tls=false --set ingress.enabled=false --set hub.serviceType=LoadBalancer
-sleep 1
-kubectl get pods,services,ingresses -n $NAMESPACE
+kubectl get pods, services, ingresses -n $NAMESPACE
 
-echo "Step 2 — Installing the Kubernetes Nginx Ingress Controller"
+pause "Step 2 — Installing the Kubernetes Nginx Ingress Controller"
 helm install nginx-ingress --namespace $NAMESPACE stable/nginx-ingress --set controller.publishService.enabled=true
 # kubectl get services -o wide -w nginx-ingress-controller
 
-echo "Step 3 — Exposing the App Using an Ingress"
-sleep 5
+pause "Step 3 — Exposing the App Using an Ingress"
 helm upgrade zalenium --namespace $NAMESPACE ../charts/zalenium --set ingress.tls=false --set ingress.enabled=true --set hub.serviceType=LoadBalancer
-kubectl get services,ingresses
-echo "*** At this point domain names should work (hint: need to setup hosts with IP)***"
+kubectl get services, ingresses
+Write-Host "*** At this point domain names should work (hint: need to setup hosts with IP)***"
 
-echo "Step 4 — Securing the Ingress Using Cert-Manager..."
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.1/cert-manager.crds.yaml
+if [[ $INSTALL_CERT_MANAGER -eq 1]]
+then
+    pause "Step 4 — Securing the Ingress Using Cert-Manager $cluster):$NAMESPACE ..."
+    kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.1/cert-manager.crds.yaml
+    Pause "Step 4.1 - Creating cert-manager namespace..."
+    kubectl create namespace cert-manager
+    Pause "Step 4.2 - Adding https://charts.jetstack.io to helm repos..."
+    helm repo add jetstack https://charts.jetstack.io
+    Pause "Step 4.3 - Installing cert-manager..."
+    helm install cert-manager --version v0.14.1 --namespace cert-manager jetstack/cert-manager    
+    Pause "Step 4.4 - Creating issuer, if failed run the cmd separately several times, eventauly succeeds if previous steps are ok."
+    Sleep 10 # need some time have resources ready
+    kubectl create -f .\production_issuer.yaml
+fi
 
-echo "Step 4.1 - Creating cert-manager namespace..."
-sleep 2
-kubectl create namespace cert-manager
-
-echo "Step 4.2 - Adding https://charts.jetstack.io to helm repos..."
-sleep 2
-helm repo add jetstack https://charts.jetstack.io
-
-echo "Step 4.3 - Installing cert-manager..."
-sleep 2
-helm install cert-manager --version v0.14.1 --namespace cert-manager jetstack/cert-manager
-
-echo "Step 4.4 - Creating issuer, if failed run the cmd separately several times, eventauly succeeds if previous steps are ok."
-sleep 10
-kubectl create -f ./production_issuer.yaml
-
-echo "Step 5 - Enabling TLS in ingress controller, make sure IP/HOST setting is ok then continue"
-sleep 2
+Pause "Step 5 - Enabling TLS in ingress controller, make sure IP/HOST setting is ok then continue"
 helm upgrade zalenium --namespace $NAMESPACE ../charts/zalenium --set ingress.tls=true --set ingress.enabled=true --set hub.serviceType=LoadBalancer
-sleep 2
-kubectl describe certificate kubernetes-tls-secret-z1 --namespace $NAMESPACE
 
-echo "Step 6 - Enabling basic authentication for the hub"
-sleep 2
+kubectl describe certificate $CERTIFICATE_SECRET_NAME --namespace $NAMESPACE
+
+Pause "Step 6 - Enabling basic authentication for the hub"
 helm upgrade zalenium --namespace $NAMESPACE ../charts/zalenium --set ingress.tls=true --set ingress.enabled=true --set hub.basicAuth.enabled=true --set hub.serviceType=LoadBalancer
 
-echo "Installation is finished, in few minutes you should be able to naviate to your host and https should be enabled."
+echo "cluster: $CLUSTER, namespace: $NAMESPACE, tls secret: $CERTIFICATE_SECRET_NAME"
+
+Pause "Installation is finished, in few minutes you should be able to naviate to your host and https should be enabled."

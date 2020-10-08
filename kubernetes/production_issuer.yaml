@@ -5,11 +5,11 @@ metadata:
 spec:
   acme:
     # Email address used for ACME registration
-    email: youremailaddress
+    email: youemailaddress
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       # Name of a secret used to store the ACME account private key
-      name: letsencrypt-prod-private-key
+      name: tls-secret-name
     # Add a single challenge solver, HTTP01 using nginx
     solvers:
     - selector: {}

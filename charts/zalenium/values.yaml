@@ -89,28 +89,28 @@ hub:
 
   ## Environment variables passed to Zalenium hub.
   ## https://github.com/zalando/zalenium/blob/master/docs/usage_examples.md
-  desiredContainers: 10
-  maxDockerSeleniumContainers: 250
+  desiredContainers: 1
+  maxDockerSeleniumContainers: 1000
   videoRecordingEnabled: false
   # the limits/requests below are for Selenium pods (containers)
-  cpuRequest: 250m
+  cpuRequest: 100m
   cpuLimit: 1000m
-  memRequest: 500Mi
-  memLimit: 2Gi
+  memRequest: 300Mi
+  memLimit: 1Gi
   screenWidth: 1440
   screenHeight: 900
   timeZone: "UTC"
   seleniumImageName: "elgalu/selenium:3.141.59-p16"
-  maxTestSessions: 1
+  maxTestSessions: 10
   newSessionsWaitTimeout: 600000
   debugEnabled: false
   keepOnlyFailedTests: false
   retentionPeriod: 3
   sendAnonymousUsageInfo: true
   basicAuth:
-    enabled: true
-    username: "atszalenium"
-    password: "seleniumk8!nATS"
+    enabled: false
+    username: ""
+    password: ""
   sauceLabsEnabled: false
   sauceUserName: blank
   sauceAccessKey: blank
@@ -185,8 +185,8 @@ persistence:
 ingress:
   enabled: true
   tls: true
-  secretName: kubernetes-tls-secret-z2 # only needed if tls above is true
-  hostname: loadtesthub1.sdfonazure.com
+  secretName: tls-secret-name # only needed if tls above is true
+  hostname: abc.com
   # If your ingress host name is shared with multiple
   # applications, Enter a path starting with / (eg. /zalenium)
   # If your ingress host name is only for Zalenium,

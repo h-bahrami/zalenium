@@ -141,3 +141,7 @@ $ helm install --name my-release -f values.yaml local/zalenium
 ```
 
 > **Tip**: You can use the default [values.yaml](./values.yaml)
+
+## HTTPS
+
+You can install the chart and setup ingress with TLS enabled, take a look at `../kubernates/setup-with-tls.sh` to learn about the steps, TLS certificate is generated/renewed by Cert-Manager, for details check [this](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-on-digitalocean-kubernetes-using-helm) out.
