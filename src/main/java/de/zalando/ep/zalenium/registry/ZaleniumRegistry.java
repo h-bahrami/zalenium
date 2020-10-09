@@ -1,8 +1,17 @@
 package de.zalando.ep.zalenium.registry;
 
-import de.zalando.ep.zalenium.prometheus.ContainerStatusCollectorExports;
-import de.zalando.ep.zalenium.prometheus.TestSessionCollectorExports;
-import net.jcip.annotations.ThreadSafe;
+import java.net.URL;
+import java.time.Clock;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.openqa.grid.internal.ActiveTestSessions;
 import org.openqa.grid.internal.BaseGridRegistry;
@@ -21,32 +30,21 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
+import de.zalando.ep.zalenium.prometheus.ContainerStatusCollectorExports;
+import de.zalando.ep.zalenium.prometheus.TestSessionCollectorExports;
 import de.zalando.ep.zalenium.proxy.AutoStartProxySet;
 import de.zalando.ep.zalenium.proxy.DockerSeleniumRemoteProxy;
 import de.zalando.ep.zalenium.proxy.DockeredSeleniumStarter;
-import de.zalando.ep.zalenium.proxy.novnc.WebSockifyServer;
 import de.zalando.ep.zalenium.util.Environment;
 import de.zalando.ep.zalenium.util.ZaleniumConfiguration;
 import io.prometheus.client.Collector;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Histogram;
-
-import java.net.URL;
-import java.time.Clock;
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Kernel of the grid. Keeps track of what's happening, what's free/used and assigns resources to
@@ -339,9 +337,6 @@ public class ZaleniumRegistry extends BaseGridRegistry implements GridRegistry {
      * @see GridRegistry#add(RemoteProxy)
      */
     public void add(RemoteProxy proxy) {
-
-        WebSockifyServer.setup(9719, false);        
-        LOG.info(WebSockifyServer.describe());
         
         if (proxy == null) {
             return;
